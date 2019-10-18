@@ -4,8 +4,7 @@ import PIL
 import torch
 import numpy as np
 from torchvision import datasets, transforms, models
-import matplotlib.pyplot as plt
-import seaborn as sns
+
 
 
 
@@ -17,7 +16,13 @@ def argum_parser():
     parser.add_argument('--image_path', 
                         type=str, 
                         help='Point to impage file for prediction.',
-                        required=True)
+                        required = True)
+    
+    parser.add_argument('--arch',
+                        type=str, 
+                        help='Choose model used when pretraining networks - vgg16, alexnet, and densenet121',
+                        required = True)
+                     
 
     # Load checkpoint created by train.py
     parser.add_argument('--checkpoint', 
@@ -144,6 +149,8 @@ def main():
         check_dir = args.checkpoint
     if args.image_path:
         image_path = args.image_path
+    if args.arch:
+        arch = args.arch
     if args.top_k:
         top_k = args.top_k
     if args.category_names:
@@ -151,7 +158,7 @@ def main():
     if args.gpu:
         option = args.gpu
         
-    model = initiate_model(arch='vgg16') 
+    model = initiate_model(arch) 
     
     device = switch_gpu(option)
     
@@ -159,8 +166,10 @@ def main():
     
     processed_image = process_image(image_path)
     
-    probs, classes = predict(processed_image, trained_model, device, top_k=5)
+    probs, classes = predict(processed_image, trained_model, device, top_k)
     
-    classify_image(processed_image,probs,classes,category_names='cat_to_name.json')
+    classify_image(processed_image,probs,classes,category_names)
     
-main() 
+main()    
+    
+    
