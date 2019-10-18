@@ -83,11 +83,18 @@ def initiate_model(arch='vgg16'):
         
     return model      
 
-def define_classifier(model, hidden_units=2500):
+def define_classifier(model, hidden_units=2500,arch='vgg16'):
     print("Number of Hidden Layers used",hidden_units,".")
     
     # Find Input Layers
-    input_features = model.classifier[0].in_features
+    
+    if arch = 'vgg16':
+        input_features = model.classifier[0].in_features
+    else if arch = 'alexnet':
+        input_features = model.classifier[1].in_features
+    else if arch = 'densenet121':
+        input_features = model.classifier.in_features
+        
     
     classifier = nn.Sequential(nn.Linear(input_features, hidden_units),
                                  nn.ReLU(),
@@ -215,7 +222,7 @@ def main():
     
     model = initiate_model(arch)
     
-    model.classifier = define_classifier(model, hidden_units)
+    model.classifier = define_classifier(model, hidden_units,arch)
             
     device = switch_gpu(option)  
     
